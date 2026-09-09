@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocEase AI</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>DocEase AI</h1>
+      </div>
+      <p class="subtitle">Understand your documents in simple language.</p>
+    </div>
+
+    <div class="card">
+      <h2>Upload Document</h2>
+      <p class="hint">Upload PDF or Image (PDF, PNG, JPG, JPEG)</p>
+
+      <div class="note">
+        <strong>For best results:</strong> upload a clear original PDF or a sharp scan/photo.<br/>
+        <strong>MVP limits:</strong> we analyze up to <strong>first 3 pages</strong> of a PDF (and OCR up to <strong>first 2 pages</strong> for scanned PDFs).<br/>
+        Very compressed/blurry documents may take longer and produce inaccurate text.
+      </div>
+
+      {% if error %}
+        <div class="error">{{ error }}</div>
+      {% endif %}
+
+      <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <div class="row">
+          <input id="fileInput" class="file" type="file" name="document" accept=".pdf,.png,.jpg,.jpeg" required />
+          <button id="uploadBtn" class="btn" type="submit">Upload</button>
+        </div>
+      </form>
+
+      <p class="small">
+        Privacy note: your file is processed temporarily and deleted after processing.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p class="loading-title">Processing…</p>
+      <p id="loadingMessage" class="loading-text">
+        Reading your document. This may take a few seconds.
+      </p>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

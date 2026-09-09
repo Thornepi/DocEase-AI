@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Secrets
+.env
+
+# Temporary uploads (should be empty, but ignore anyway)
+uploads/
+
+# Editor/OS
+.vscode/
+.DS_Store

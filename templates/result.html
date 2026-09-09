@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocEase AI - Result</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>DocEase AI</h1>
+      </div>
+      <p class="subtitle">Document processed.</p>
+    </div>
+
+    <div class="card">
+      <h2>Upload Status</h2>
+      <p><strong>Filename:</strong> {{ filename }}</p>
+      <p><strong>File type:</strong> {{ filetype }}</p>
+      <p><strong>Extraction method:</strong> {{ extraction_method }}</p>
+
+      {% if pdf_page_count %}
+        <p class="small">
+          PDF pages: {{ pdf_page_count }}. MVP analyzes first 3 pages (OCR up to first 2 pages for scanned PDFs).
+        </p>
+      {% endif %}
+
+      {% if extraction_error %}
+        <div class="error" style="margin-top:12px;">{{ extraction_error }}</div>
+      {% endif %}
+
+      {% if analysis_error %}
+        <div class="error" style="margin-top:12px;">
+          Gemini analysis failed right now (usually temporary). Error: {{ analysis_error }}
+        </div>
+      {% endif %}
+
+      {% if analysis %}
+        <h2 style="margin-top:16px;">DOCUMENT TYPE</h2>
+        <div class="preview">{{ analysis.document_type }}</div>
+
+        <h2 style="margin-top:16px;">IMPORTANT INFORMATION</h2>
+        <div class="preview">
+          {% for item in analysis.important_information %}
+            <div class="info-row">
+              <strong>{{ item.label }}:</strong>
+
+              {% if item.sensitive %}
+                <span
+                  class="sensitive-value"
+                  data-masked='{{ item.masked_value | tojson }}'
+                  data-full='{{ item.value | tojson }}'
+                >{{ item.masked_value }}</span>
+
+                <button type="button" class="eye-btn toggle-sensitive" aria-label="Show/Hide sensitive value">
+                  Show
+                </button>
+              {% else %}
+                <span>{{ item.value }}</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <h2 style="margin-top:16px;">WHAT THIS DOCUMENT MEANS</h2>
+        <div class="preview">{{ analysis.simple_explanation }}</div>
+
+        <h2 style="margin-top:16px;">THINGS TO NOTICE</h2>
+        <div class="preview">
+          <ul style="margin:0; padding-left:18px;">
+            {% for t in analysis.things_to_notice %}
+              <li>{{ t }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        {% if analysis.is_medical and analysis.medical_disclaimer %}
+          <h2 style="margin-top:16px;">MEDICAL DISCLAIMER</h2>
+          <div class="preview">{{ analysis.medical_disclaimer }}</div>
+        {% endif %}
+      {% endif %}
+
+      <h2 style="margin-top:16px;">Extracted Text (preview)</h2>
+      <p class="small">Word count: {{ word_count }}</p>
+      <pre class="preview">{{ extracted_preview }}</pre>
+
+      <p class="small">
+        Privacy: your uploaded file was deleted after processing (not stored permanently).
+        Masking here only affects what is displayed.
+      </p>
+
+      <a class="btn" href="/">Upload another</a>
+    </div>
+
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
